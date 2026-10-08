@@ -122,6 +122,12 @@ input[type=text]:focus, textarea:focus { background: #fff; }
     <!-- بخش ۱ -->
     <div class="section-title">بخش ۱ — اطلاعات فردی</div>
 
+    <div class="q-card" data-q="email" data-required="1">
+      <div class="q-title">ایمیل شما <span class="req">*</span></div>
+      <input type="email" name="email" placeholder="example@mail.com" dir="ltr" style="text-align:right;">
+      <div class="err">لطفاً یک ایمیل معتبر وارد کنید</div>
+    </div>
+
     <div class="q-card" data-q="q1" data-required="1">
       <div class="q-title">۱. نام و نام خانوادگی <span class="req">*</span></div>
       <input type="text" name="q1" placeholder="پاسخ شما">
@@ -413,7 +419,7 @@ function answers() {
     } else if (type === 'scale') {
       val = card.querySelector('input[type=hidden]').value;
     } else {
-      var el = card.querySelector('input[type=text], textarea');
+      var el = card.querySelector('input[type=text], input[type=email], textarea');
       val = el ? el.value.trim() : "";
     }
     data[key] = val;
@@ -429,8 +435,11 @@ function validate() {
     else if (type === 'cb') filled = !!card.querySelector('input[type=checkbox]:checked');
     else if (type === 'scale') filled = !!card.querySelector('input[type=hidden]').value;
     else {
-      var el = card.querySelector('input[type=text], textarea');
+      var el = card.querySelector('input[type=text], input[type=email], textarea');
       filled = el && el.value.trim() !== "";
+      if (filled && el.type === 'email') {
+        filled = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(el.value.trim());
+      }
     }
     card.classList.toggle('invalid', !filled);
     var err = card.querySelector('.err');
